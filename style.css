@@ -1,0 +1,96 @@
+body {
+    background-color: #EEEEEE;
+    font-family: georgia, helvetica, Arial, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: orange;
+}
+
+h1, h2, h3, h4 {
+    margin: 0;
+}
+
+#container{
+    background-color: white;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+}
+
+#header{
+    background-color: rgb(10, 96, 139);
+    color: white;
+    text-align: center;
+}
+
+#content {
+    padding: 10px 10px 10px 10px;
+}
+
+#nav {
+    width: 180px;
+    float: left;
+}
+
+#nav ul{
+     list-style-type: none;
+     padding: 0;
+}
+
+#nav .selected {
+    font-weight: bold;
+}
+
+#main{
+    width: 600px;
+    float: right;
+}
+
+#footer{
+    clear: both;
+    padding: 10px;
+    background-color: rgb(61, 58, 58);
+    color: white;
+    text-align: right;
+}
+
+
+#main ul{
+     list-style-type: none;
+     padding: 0;
+}
+
+#main ol{
+     list-style-type: none;
+     padding: 0;
+}
+
+#watchtowerlist {
+     list-style-type: none;
+     padding: 0;
+     font-size: small;
+}
+
+#bashlist {
+     list-style-type: none;
+     padding: 0;
+     font-size: small;
+}
+
+
+#ecubelist {
+     list-style-type: none;
+     padding: 0;
+     font-size: small;
+}
+
+p {
+    margin: 10;
+    max-width: 600px;
+    font-family: georgia, helvetica, Arial, sans-serif;
+    font-size: 10pt;
+    text-align: justify;
+}
