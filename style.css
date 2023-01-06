@@ -68,24 +68,7 @@ h1, h2, h3, h4 {
      padding: 0;
 }
 
-#watchtowerlist {
-     list-style-type: none;
-     padding: 0;
-     font-size: small;
-}
 
-#bashlist {
-     list-style-type: none;
-     padding: 0;
-     font-size: small;
-}
-
-
-#ecubelist {
-     list-style-type: none;
-     padding: 0;
-     font-size: small;
-}
 
 p {
     margin: 10;
