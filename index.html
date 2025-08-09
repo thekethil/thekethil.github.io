@@ -522,12 +522,22 @@
             
             <div class="event-card">
                 <h3 class="event-title">Next Pooja Ceremony</h3>
-                <div class="event-details" id="event-details-container">
+                <div class="event-details">
                     <div class="event-detail">
+                        <i class="fas fa-calendar-alt event-icon"></i>
                         <span id="next-pooja-date">Loading...</span>
                     </div>
                     <div class="event-detail">
+                        <i class="fas fa-clock event-icon"></i>
+                        <span id="next-pooja-days">Loading...</span>
+                    </div>
+                    <div class="event-detail">
+                        <i class="fas fa-map-marker-alt event-icon"></i>
                         <span id="next-pooja-month">Loading...</span>
+                    </div>
+                    <div class="event-detail">
+                        <i class="fas fa-check-circle event-icon"></i>
+                        <span id="next-pooja-status"></span>
                     </div>
                 </div>
             </div>
@@ -663,13 +673,9 @@
                     '<div class="loading">Unable to load pooja dates. Please check back later.</div>';
                     
                 document.getElementById('next-pooja-date').textContent = 'Unable to load';
+                document.getElementById('next-pooja-days').textContent = 'Check CSV file';
                 document.getElementById('next-pooja-month').textContent = 'Data not available';
-                
-                // Remove any existing status element
-                const existingStatus = document.getElementById('next-pooja-status-container');
-                if (existingStatus) {
-                    existingStatus.remove();
-                }
+                document.getElementById('next-pooja-status').textContent = '';
             }
         }
 
@@ -684,39 +690,39 @@
             // Update the event section with the first (next) pooja data
             if (poojas.length > 0) {
                 const nextPooja = poojas[0];
+                const daysAway = calculateDaysAway(nextPooja.Date);
                 
                 // Update all event section fields from CSV data
                 const dateElement = document.getElementById('next-pooja-date');
+                const daysElement = document.getElementById('next-pooja-days');
                 const monthElement = document.getElementById('next-pooja-month');
-                const eventDetailsContainer = document.getElementById('event-details-container');
+                const statusElement = document.getElementById('next-pooja-status');
                 
                 if (dateElement) {
                     dateElement.textContent = formatDate(nextPooja.Date);
                 }
                 
+                if (daysElement) {
+                    daysElement.textContent = `${daysAway} days away`;
+                }
+                
                 if (monthElement) {
-                    monthElement.textContent = nextPooja.Malayalam_Month;
+                    monthElement.textContent = `${nextPooja.Malayalam_Month} (Malayalam Month)`;
                 }
                 
-                // Remove any existing status element
-                const existingStatus = document.getElementById('next-pooja-status-container');
-                if (existingStatus) {
-                    existingStatus.remove();
-                }
-                
-                // Only add status element if someone is booked
-                if (nextPooja.Booked_By && nextPooja.Booked_By.trim() !== '' && eventDetailsContainer) {
-                    const statusElement = document.createElement('div');
-                    statusElement.className = 'event-detail';
-                    statusElement.id = 'next-pooja-status-container';
-                    statusElement.innerHTML = `
-                        <span style="color: #f44336;">Booked by ${nextPooja.Booked_By}</span>
-                    `;
-                    eventDetailsContainer.appendChild(statusElement);
+                if (statusElement) {
+                    if (nextPooja.Booked_By && nextPooja.Booked_By.trim() !== '') {
+                        statusElement.textContent = `🔒 Booked by ${nextPooja.Booked_By}`;
+                        statusElement.style.color = '#f44336';
+                    } else {
+                        statusElement.textContent = ''; // Remove "Available" text
+                        statusElement.style.color = '#4caf50';
+                    }
                 }
             }
 
             const html = poojas.map(pooja => {
+                const daysAway = calculateDaysAway(pooja.Date);
                 let statusHtml = '';
                 
                 // Only show status if someone is booked
@@ -727,10 +733,11 @@
                 return `
                     <div class="pooja-item ${pooja.Booked_By && pooja.Booked_By.trim() !== '' ? 'booked' : 'available'}">
                         <div class="pooja-header">
-                            🙏 Pooja - ${formatDate(pooja.Date)}
+                            🙏 Pooja - ${formatDate(pooja.Date)} 
+                            <span class="days-away">(${daysAway} days away)</span>
                         </div>
                         <div class="pooja-details">
-                            ${pooja.Malayalam_Month}
+                            📅 ${pooja.Malayalam_Month}
                             ${statusHtml}
                         </div>
                     </div>
