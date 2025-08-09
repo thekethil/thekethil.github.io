@@ -436,6 +436,11 @@
             opacity: 0.8;
         }
 
+        .pooja-item.available {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%);
+            border-color: #ffcc80;
+        }
+
         .pooja-header {
             font-size: 1.2rem;
             font-weight: 600;
@@ -458,10 +463,13 @@
         .pooja-status {
             margin-top: 0.5rem;
             font-weight: 500;
+        }
+
+        .pooja-item.available .pooja-status {
             color: #4caf50;
         }
 
-        .pooja-status:contains("Booked") {
+        .pooja-item.booked .pooja-status {
             color: #f44336;
         }
 
@@ -529,7 +537,7 @@
                     </div>
                     <div class="event-detail">
                         <i class="fas fa-check-circle event-icon"></i>
-                        <span>✅ Available for Booking</span>
+                        <span id="next-pooja-status">Available for Booking</span>
                     </div>
                 </div>
             </div>
@@ -672,20 +680,39 @@
                 return;
             }
 
+            // Update the event section with the first (next) pooja status
+            if (poojas.length > 0) {
+                const nextPooja = poojas[0];
+                const statusElement = document.getElementById('next-pooja-status');
+                if (statusElement) {
+                    if (nextPooja.Booked_By && nextPooja.Booked_By.trim() !== '') {
+                        statusElement.textContent = `🔒 Booked by ${nextPooja.Booked_By}`;
+                        statusElement.style.color = '#f44336';
+                    } else {
+                        statusElement.textContent = '✅ Available for Booking';
+                        statusElement.style.color = '#4caf50';
+                    }
+                }
+            }
+
             const html = poojas.map(pooja => {
                 const daysAway = calculateDaysAway(pooja.Date);
-                const status = pooja.Status === 'Available' ? '✅ Available' : '🔒 Booked';
-                const bookedInfo = pooja.Booked_By ? ` (${pooja.Booked_By})` : '';
+                let status;
+                if (pooja.Booked_By && pooja.Booked_By.trim() !== '') {
+                    status = `🔒 Booked by ${pooja.Booked_By}`;
+                } else {
+                    status = '✅ Available';
+                }
                 
                 return `
-                    <div class="pooja-item ${pooja.Status.toLowerCase()}">
+                    <div class="pooja-item ${pooja.Booked_By && pooja.Booked_By.trim() !== '' ? 'booked' : 'available'}">
                         <div class="pooja-header">
                             🙏 Pooja - ${formatDate(pooja.Date)} 
                             <span class="days-away">(${daysAway} days away)</span>
                         </div>
                         <div class="pooja-details">
                             📅 ${pooja.Malayalam_Month}
-                            <div class="pooja-status">${status}${bookedInfo}</div>
+                            <div class="pooja-status">${status}</div>
                         </div>
                     </div>
                 `;
