@@ -407,6 +407,71 @@
             }
         }
 
+        /* Upcoming Poojas Styling */
+        .upcoming-poojas-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .pooja-item {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%);
+            border: 1px solid #ffcc80;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: transform 0.3s ease;
+        }
+
+        .pooja-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 153, 51, 0.2);
+        }
+
+        .pooja-item.booked {
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+            border-color: #bdbdbd;
+            opacity: 0.8;
+        }
+
+        .pooja-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .days-away {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+
+        .pooja-details {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .pooja-status {
+            margin-top: 0.5rem;
+            font-weight: 500;
+            color: #4caf50;
+        }
+
+        .pooja-status:contains("Booked") {
+            color: #f44336;
+        }
+
+        .loading {
+            text-align: center;
+            color: var(--text-light);
+            font-style: italic;
+            padding: 2rem;
+        }
+
         /* Scroll animations */
         .fade-in {
             opacity: 0;
@@ -434,6 +499,7 @@
         <div class="nav-container">
             <ul class="nav-menu">
                 <li><a href="#events" class="nav-link active">Events</a></li>
+                <li><a href="#upcoming" class="nav-link">Upcoming Poojas</a></li>
                 <li><a href="#gallery" class="nav-link">Photo Gallery</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
             </ul>
@@ -522,6 +588,17 @@
             </div>
         </section>
 
+        <!-- Upcoming Poojas Section -->
+        <section id="upcoming" class="section fade-in">
+            <h2 class="section-title">Upcoming Poojas</h2>
+            <div class="upcoming-poojas-section">
+                <div id="upcoming-poojas">
+                    <!-- Pooja data will be loaded here -->
+                    <div class="loading">Loading upcoming poojas...</div>
+                </div>
+            </div>
+        </section>
+
         <!-- About Section -->
         <section id="about" class="section fade-in">
             <h2 class="section-title">About</h2>
@@ -550,6 +627,95 @@
     </footer>
 
     <script>
+        // Current date: August 9, 2025
+        const TODAY = new Date('2025-08-09');
+
+        // Function to calculate days from today
+        function calculateDaysAway(dateString) {
+            const poojaDate = new Date(dateString);
+            const diffTime = poojaDate - TODAY;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+
+        // Function to load and display upcoming poojas
+        async function loadUpcomingPoojas() {
+            try {
+                // Replace 'yourusername/yourrepo' with your actual GitHub repository
+                const response = await fetch('https://raw.githubusercontent.com/thekethil/thekethil.github.io/main/data/upcoming-poojas.csv');
+                const csvText = await response.text();
+                const poojas = parseCSV(csvText);
+                
+                // Filter and sort upcoming poojas
+                const upcoming = poojas
+                    .filter(pooja => calculateDaysAway(pooja.Date) >= 0)
+                    .sort((a, b) => new Date(a.Date) - new Date(b.Date))
+                    .slice(0, 5); // Show next 5 poojas
+                
+                displayPoojas(upcoming);
+            } catch (error) {
+                console.error('Error loading pooja data:', error);
+                document.getElementById('upcoming-poojas').innerHTML = 
+                    '<div class="loading">Unable to load pooja dates. Please check back later.</div>';
+            }
+        }
+
+        // Function to display poojas
+        function displayPoojas(poojas) {
+            const container = document.getElementById('upcoming-poojas');
+            if (poojas.length === 0) {
+                container.innerHTML = '<div class="loading">No upcoming poojas found.</div>';
+                return;
+            }
+
+            const html = poojas.map(pooja => {
+                const daysAway = calculateDaysAway(pooja.Date);
+                const status = pooja.Status === 'Available' ? '✅ Available' : '🔒 Booked';
+                const bookedInfo = pooja.Booked_By ? ` (${pooja.Booked_By})` : '';
+                
+                return `
+                    <div class="pooja-item ${pooja.Status.toLowerCase()}">
+                        <div class="pooja-header">
+                            🙏 Pooja - ${formatDate(pooja.Date)} 
+                            <span class="days-away">(${daysAway} days away)</span>
+                        </div>
+                        <div class="pooja-details">
+                            📅 ${pooja.Malayalam_Month}
+                            <div class="pooja-status">${status}${bookedInfo}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = html;
+        }
+
+        // Helper function to parse CSV
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            const headers = lines[0].split(',');
+            
+            return lines.slice(1).map(line => {
+                const values = line.split(',');
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = values[index] || '';
+                });
+                return obj;
+            });
+        }
+
+        // Helper function to format date
+        function formatDate(dateString) {
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'short'
+            };
+            return new Date(dateString).toLocaleDateString('en-IN', options);
+        }
+
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -626,6 +792,9 @@
         document.querySelectorAll('.photo-item').forEach((item, index) => {
             item.style.animationDelay = `${index * 0.1}s`;
         });
+
+        // Load poojas when page loads
+        document.addEventListener('DOMContentLoaded', loadUpcomingPoojas);
     </script>
 </body>
 </html>
