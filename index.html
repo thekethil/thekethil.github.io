@@ -525,15 +525,15 @@
                 <div class="event-details">
                     <div class="event-detail">
                         <i class="fas fa-calendar-alt event-icon"></i>
-                        <span>Monday, August 19, 2025</span>
+                        <span id="next-pooja-date">Loading...</span>
                     </div>
                     <div class="event-detail">
                         <i class="fas fa-clock event-icon"></i>
-                        <span>10 days away</span>
+                        <span id="next-pooja-days">Loading...</span>
                     </div>
                     <div class="event-detail">
                         <i class="fas fa-map-marker-alt event-icon"></i>
-                        <span>Chingam (Malayalam Month)</span>
+                        <span id="next-pooja-month">Loading...</span>
                     </div>
                     <div class="event-detail">
                         <i class="fas fa-check-circle event-icon"></i>
@@ -667,8 +667,15 @@
                 displayPoojas(upcoming);
             } catch (error) {
                 console.error('Error loading pooja data:', error);
+                
+                // Update error messages for both sections
                 document.getElementById('upcoming-poojas').innerHTML = 
                     '<div class="loading">Unable to load pooja dates. Please check back later.</div>';
+                    
+                document.getElementById('next-pooja-date').textContent = 'Unable to load';
+                document.getElementById('next-pooja-days').textContent = 'Check CSV file';
+                document.getElementById('next-pooja-month').textContent = 'Data not available';
+                document.getElementById('next-pooja-status').textContent = '';
             }
         }
 
@@ -680,10 +687,29 @@
                 return;
             }
 
-            // Update the event section with the first (next) pooja status
+            // Update the event section with the first (next) pooja data
             if (poojas.length > 0) {
                 const nextPooja = poojas[0];
+                const daysAway = calculateDaysAway(nextPooja.Date);
+                
+                // Update all event section fields from CSV data
+                const dateElement = document.getElementById('next-pooja-date');
+                const daysElement = document.getElementById('next-pooja-days');
+                const monthElement = document.getElementById('next-pooja-month');
                 const statusElement = document.getElementById('next-pooja-status');
+                
+                if (dateElement) {
+                    dateElement.textContent = formatDate(nextPooja.Date);
+                }
+                
+                if (daysElement) {
+                    daysElement.textContent = `${daysAway} days away`;
+                }
+                
+                if (monthElement) {
+                    monthElement.textContent = `${nextPooja.Malayalam_Month} (Malayalam Month)`;
+                }
+                
                 if (statusElement) {
                     if (nextPooja.Booked_By && nextPooja.Booked_By.trim() !== '') {
                         statusElement.textContent = `🔒 Booked by ${nextPooja.Booked_By}`;
