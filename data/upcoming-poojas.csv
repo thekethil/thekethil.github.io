@@ -1,13 +1,5 @@
 Date,Malayalam_Month,Days_From_Today,Booked_By,Phone,Status
-2025-08-19,Chingam,10,,,Available
-2025-09-18,Kanni,40,,,Available
-2025-10-17,Thulam,69,,,Available
-2025-11-16,Vrischikam,99,,,Available
-2025-12-15,Dhanu,128,,,Available
-2026-01-13,Makaram,157,,,Available
-2026-02-12,Kumbham,187,,,Available
-2026-03-14,Meenam,217,,,Available
-2026-04-12,Medam,246,,,Available
-2026-05-12,Edavam,276,,,Available
-2026-06-10,Mithunam,305,,,Available
-2026-07-10,Karkidakam,335,,,Available
+2025-09-04,Chingam,10,,,Available
+2025-10-06,Kanni,40,,,Available
+2025-11-05,Thulam,69,Moly Chechi,,Available
+2025-12-04,Vrischikam,99,,,Available
