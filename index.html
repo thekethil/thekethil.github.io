@@ -531,8 +531,8 @@
                         <i class="fas fa-map-marker-alt event-icon"></i>
                         <span id="next-pooja-month">Loading...</span>
                     </div>
-                    <div class="event-detail">
-                        <i class="fas fa-check-circle event-icon"></i>
+                    <div class="event-detail" id="next-pooja-status-container" style="display: none;">
+                        <i class="fas fa-user event-icon"></i>
                         <span id="next-pooja-status"></span>
                     </div>
                 </div>
@@ -670,7 +670,10 @@
                     
                 document.getElementById('next-pooja-date').textContent = 'Unable to load';
                 document.getElementById('next-pooja-month').textContent = 'Data not available';
-                document.getElementById('next-pooja-status').textContent = '';
+                const statusContainer = document.getElementById('next-pooja-status-container');
+                if (statusContainer) {
+                    statusContainer.style.display = 'none';
+                }
             }
         }
 
@@ -690,6 +693,7 @@
                 const dateElement = document.getElementById('next-pooja-date');
                 const monthElement = document.getElementById('next-pooja-month');
                 const statusElement = document.getElementById('next-pooja-status');
+                const statusContainer = document.getElementById('next-pooja-status-container');
                 
                 if (dateElement) {
                     dateElement.textContent = formatDate(nextPooja.Date);
@@ -699,13 +703,13 @@
                     monthElement.textContent = nextPooja.Malayalam_Month;
                 }
                 
-                if (statusElement) {
+                if (statusElement && statusContainer) {
                     if (nextPooja.Booked_By && nextPooja.Booked_By.trim() !== '') {
-                        statusElement.textContent = `🔒 Booked by ${nextPooja.Booked_By}`;
+                        statusElement.textContent = `Booked by ${nextPooja.Booked_By}`;
                         statusElement.style.color = '#f44336';
+                        statusContainer.style.display = 'flex';
                     } else {
-                        statusElement.textContent = ''; // Remove "Available" text
-                        statusElement.style.color = '#4caf50';
+                        statusContainer.style.display = 'none';
                     }
                 }
             }
