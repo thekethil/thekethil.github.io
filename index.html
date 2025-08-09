@@ -710,7 +710,7 @@
                     statusElement.className = 'event-detail';
                     statusElement.id = 'next-pooja-status-container';
                     statusElement.innerHTML = `
-                        <span style="color: #f44336;">Booked : ${nextPooja.Booked_By}</span>
+                        <span style="color: #f44336;">Booked</span>
                     `;
                     eventDetailsContainer.appendChild(statusElement);
                 }
@@ -721,7 +721,7 @@
                 
                 // Only show status if someone is booked
                 if (pooja.Booked_By && pooja.Booked_By.trim() !== '') {
-                    statusHtml = `<div class="pooja-status">🔒 Booked : ${pooja.Booked_By}</div>`;
+                    statusHtml = `<div class="pooja-status">🔒 Booked</div>`;
                 }
                 
                 return `
