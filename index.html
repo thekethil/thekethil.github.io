@@ -528,10 +528,6 @@
                         <span id="next-pooja-date">Loading...</span>
                     </div>
                     <div class="event-detail">
-                        <i class="fas fa-clock event-icon"></i>
-                        <span id="next-pooja-days">Loading...</span>
-                    </div>
-                    <div class="event-detail">
                         <i class="fas fa-map-marker-alt event-icon"></i>
                         <span id="next-pooja-month">Loading...</span>
                     </div>
@@ -673,7 +669,6 @@
                     '<div class="loading">Unable to load pooja dates. Please check back later.</div>';
                     
                 document.getElementById('next-pooja-date').textContent = 'Unable to load';
-                document.getElementById('next-pooja-days').textContent = 'Check CSV file';
                 document.getElementById('next-pooja-month').textContent = 'Data not available';
                 document.getElementById('next-pooja-status').textContent = '';
             }
@@ -690,11 +685,9 @@
             // Update the event section with the first (next) pooja data
             if (poojas.length > 0) {
                 const nextPooja = poojas[0];
-                const daysAway = calculateDaysAway(nextPooja.Date);
                 
                 // Update all event section fields from CSV data
                 const dateElement = document.getElementById('next-pooja-date');
-                const daysElement = document.getElementById('next-pooja-days');
                 const monthElement = document.getElementById('next-pooja-month');
                 const statusElement = document.getElementById('next-pooja-status');
                 
@@ -702,12 +695,8 @@
                     dateElement.textContent = formatDate(nextPooja.Date);
                 }
                 
-                if (daysElement) {
-                    daysElement.textContent = `${daysAway} days away`;
-                }
-                
                 if (monthElement) {
-                    monthElement.textContent = `${nextPooja.Malayalam_Month} (Malayalam Month)`;
+                    monthElement.textContent = nextPooja.Malayalam_Month;
                 }
                 
                 if (statusElement) {
@@ -722,7 +711,6 @@
             }
 
             const html = poojas.map(pooja => {
-                const daysAway = calculateDaysAway(pooja.Date);
                 let statusHtml = '';
                 
                 // Only show status if someone is booked
@@ -733,8 +721,7 @@
                 return `
                     <div class="pooja-item ${pooja.Booked_By && pooja.Booked_By.trim() !== '' ? 'booked' : 'available'}">
                         <div class="pooja-header">
-                            🙏 Pooja - ${formatDate(pooja.Date)} 
-                            <span class="days-away">(${daysAway} days away)</span>
+                            🙏 Pooja - ${formatDate(pooja.Date)}
                         </div>
                         <div class="pooja-details">
                             📅 ${pooja.Malayalam_Month}
