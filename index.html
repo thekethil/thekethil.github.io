@@ -537,7 +537,7 @@
                     </div>
                     <div class="event-detail">
                         <i class="fas fa-check-circle event-icon"></i>
-                        <span id="next-pooja-status">Available for Booking</span>
+                        <span id="next-pooja-status"></span>
                     </div>
                 </div>
             </div>
@@ -689,7 +689,7 @@
                         statusElement.textContent = `🔒 Booked by ${nextPooja.Booked_By}`;
                         statusElement.style.color = '#f44336';
                     } else {
-                        statusElement.textContent = '✅ Available for Booking';
+                        statusElement.textContent = ''; // Remove "Available" text
                         statusElement.style.color = '#4caf50';
                     }
                 }
@@ -697,11 +697,11 @@
 
             const html = poojas.map(pooja => {
                 const daysAway = calculateDaysAway(pooja.Date);
-                let status;
+                let statusHtml = '';
+                
+                // Only show status if someone is booked
                 if (pooja.Booked_By && pooja.Booked_By.trim() !== '') {
-                    status = `🔒 Booked by ${pooja.Booked_By}`;
-                } else {
-                    status = '✅ Available';
+                    statusHtml = `<div class="pooja-status">🔒 Booked by ${pooja.Booked_By}</div>`;
                 }
                 
                 return `
@@ -712,7 +712,7 @@
                         </div>
                         <div class="pooja-details">
                             📅 ${pooja.Malayalam_Month}
-                            <div class="pooja-status">${status}</div>
+                            ${statusHtml}
                         </div>
                     </div>
                 `;
